@@ -11,12 +11,12 @@ pipeline {
 stages {
     stage ("build image and create project dir") {
        environment {
-        registry_endpoint = "${env.registryUri}" + "${env.registry}"
-        tag_commit = "${env.registry}" + "$GIT_COMMIT"
+        registry_endpoint = "https" + "${env.registryUri}" + "${env.registry}"
+        docker_image = "${env.registry}" + ":$GIT_COMMIT"
        }
        steps {
         script {
-          def app = docker.build(tag_commit)
+          def app = docker.build(docker_image)
            docker.withRegistry (registry_endpoint, registryCred) {
             app.push()
            }
