@@ -1,14 +1,27 @@
 pipeline {
   agent any
   parameters {
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        choice(name: 'CHOICE', choices: ['Dev', 'Stg', 'Prod'], description: 'Pick something')
 }
-  stages {
-    stage ("Printing Choice") {
+  environments {
+    registryUri = "https://hub.docker.com/"
+    registry = "viveksawant100/cloudethix-sample-nginx"
+    registryCred = "dev_dockerhub_cred"  
+  }
+stages {
+    stage ("build image and create project dir") {
+       environment {
+        registry_endpoint = "${env.registryUri}" + "${env.registry}"
+        tag_commit = "${env.registry}" + "$GIT_COMMIT"
+       }
        steps {
-        echo "Choice: ${params.CHOICE}"
-       } 
-    }
+        script {
+          def app = docker.build(tag_commit)
+           docker.withRegistry (registry_endpoint, registryCred) {
+            app.push()
+           }
+        }
+       }
        
   } 
 }
