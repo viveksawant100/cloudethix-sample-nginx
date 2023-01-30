@@ -3,7 +3,7 @@ pipeline {
   parameters {
         choice(name: 'CHOICE', choices: ['Dev', 'Stg', 'Prod'], description: 'Pick something')
 }
-  environments {
+  environment {
     registryUri = "https://hub.docker.com/"
     registry = "viveksawant100/cloudethix-sample-nginx"
     registryCred = "dev_dockerhub_cred"  
