@@ -11,7 +11,7 @@ pipeline {
 stages {
     stage ("build image and create project dir") {
        environment {
-        registry_endpoint = 'https//' + "${env.registryUri}" + "${env.registry}"
+        registry_endpoint = 'https://' + "${env.registryUri}" + "${env.registry}"
         docker_image = "${env.registry}" + ":$GIT_COMMIT"
        }
        steps {
