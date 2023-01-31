@@ -6,7 +6,7 @@ pipeline {
   environment {
     registryUri = "registry.hub.docker.com/"
     registry = "viveksawant100/cloudethix-sample-nginx"
-    registryCred = "dev_dockerhub_cred"  
+    dev_registryCred = "dev_dockerhub_cred"  
   }
 stages {
     stage ("build image and create project dir") {
@@ -17,12 +17,15 @@ stages {
        steps {
         script {
           def app = docker.build(docker_image)
-           docker.withRegistry (registry_endpoint, registryCred) {
+           docker.withRegistry (registry_endpoint, dev_registryCred) {
             app.push()
            }
         }
-       }
-       
+     }
+           
   } 
+   stage ("Remove Unused Docker image"){
+      sh "docker rmi ${env.registry}" + ":$GIT_COMMIT
+   } 
 }
 }
