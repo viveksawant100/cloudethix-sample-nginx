@@ -30,4 +30,10 @@ stages {
    } 
    }
 }
+ post {
+  always {
+    echo "Deleting directory from workspace"
+    deleteDir()
+  }
+ }
 }
