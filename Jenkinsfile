@@ -5,14 +5,15 @@ pipeline {
 }
   environment {
     registryUri = "registry.hub.docker.com/"
-    registry = "viveksawant100/cloudethix-sample-nginx"
+    dev_registry = "viveksawant100/cloudethix-sample-nginx"
     dev_registryCred = "dev_dockerhub_cred"  
+    qa_registryCred = "qa_dockerhub_cred" 
   }
 stages {
     stage ("build image and create project dir") {
        environment {
-        registry_endpoint = 'https://' + "${env.registryUri}" + "${env.registry}"
-        docker_image = "${env.registry}" + ":$GIT_COMMIT"
+        registry_endpoint = 'https://' + "${env.registryUri}" + "${env.dev_registry}"
+        docker_image = "${env.dev_registry}" + ":$GIT_COMMIT"
        }
        steps {
         script {
@@ -24,16 +25,12 @@ stages {
      }
            
   } 
-   stage ("Remove Unused Docker image"){
-    steps {
-      sh "docker rmi ${env.registry}" + ":$GIT_COMMIT"
-   } 
-   }
-}
- post {
+  post {
   always {
-    echo "Deleting directory from workspace"
-    deleteDir()
+       sh 'echo Cleaning docker Images from Jenkins.'
+       sh "docker rmi ${env.dev_image}"
   }
  }
+
+}
 }
